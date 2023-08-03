@@ -23,6 +23,6 @@ Usage of .\auto_ssh_fingerprints.exe:
   -p int
         The SSH port of host. (default 22)
 ```
-
+#### TODO: Add YAML config file option so fingerprinting can be done in batches. You can also use BASH to do it in batches.
 ------
 <a href="https://www.buymeacoffee.com/alex_f0rg" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
