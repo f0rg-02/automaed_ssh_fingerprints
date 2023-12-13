@@ -1,0 +1,9 @@
+servers:
+  server:
+    - address: "server1"
+      known_hosts_file: C:\\Users\\User\\.ssh\\known_hosts
+    - address: "server2"
+      port: "22"
+    - address: "pc"
+    - address: "laptop"
+      known_hosts_file: /home/user/.ssh/known_hosts
