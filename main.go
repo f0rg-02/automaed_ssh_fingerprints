@@ -93,6 +93,16 @@ func FileOp(data string, data_file string) { // I haven't slept.
 
 }
 
+func ReadIpFile(data_file string) []byte {
+	data, err := os.ReadFile(data_file)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return data
+}
+
 func ChkYaml(file *string) Config {
 
 	var config Config
@@ -127,16 +137,26 @@ func main() {
 
 	var config Config
 	var config_set bool
+	var ip_file_set bool
 
 	host_file := flag.String("c", "", "The yaml config file with addresses and ports of hosts.")
-	host := flag.String("h", "", "The SSH host to fingerprint.")
+	ip_file := flag.String("i", "", "A file that contains a list of ips")
+	host := flag.String("s", "", "The SSH host to fingerprint.")
 	port := flag.Int("p", 22, "The SSH port of host.")
-	file := flag.String("f", ".ssh/known_hosts", "Known hosts file location.")
+	file := flag.String("o", ".ssh/known_hosts", "Known hosts file location to write public keys to.")
+	flag.Bool("h", true, "Show this help")
 	flag.Parse()
+
+	// Check if help was passed
+
+	if isFlagPassed("h") {
+		usage()
+		os.Exit(1)
+	}
 
 	// Check if either config file was passed or host flag was passed
 
-	if !(isFlagPassed("h") || isFlagPassed("c")) {
+	if !(isFlagPassed("s") || isFlagPassed("c") || isFlagPassed("i")) {
 		usage()
 		log.Fatal("\nNot enough arguments passed.")
 	}
@@ -145,6 +165,17 @@ func main() {
 
 		config = ChkYaml(host_file)
 		config_set = true
+	}
+
+	var ips []byte
+
+	if isFlagPassed("i") {
+		ip_file := *ip_file
+
+		ips = ReadIpFile(ip_file)
+		ip_file_set = true // Set ip_file_set to true so we can use the list of ips to connect to ssh
+
+		file_directory = *file
 	}
 
 	var host_str string
@@ -174,6 +205,29 @@ func main() {
 			} else {
 				file_directory = host.File_Directory
 			}
+
+			DialSSH(host_str, port_str)
+		}
+	} else if len(ips) > 0 && ip_file_set { // Check if the byte array is not zero length and if ip_file_set was set to true.
+		lines := strings.Split(string(ips), "\n") // Split the byte array at newline and assign to buffer lines.
+
+		// Loop through the array and try to connect to ssh server
+		for _, line := range lines {
+			fmt.Println(line)
+
+			var split_str []string
+
+			if strings.Contains(line, ":") { // Check if the line contains a colon
+				// Split and assign first array element to host and second array element to port
+				split_str = strings.Split(line, ":")
+				port_str, _ = strconv.Atoi(split_str[1])
+				host_str = split_str[0]
+			} else {
+				port_str = 22
+				host_str = line
+			}
+
+			file_directory = *file
 
 			DialSSH(host_str, port_str)
 		}

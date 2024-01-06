@@ -18,19 +18,24 @@ or
 Command line options:
 
 ```
-Usage of .\auto_ssh_fingerprints.exe:
+Usage of ./auto_ssh_fingerprints: 
 
   -c string
         The yaml config file with addresses and ports of hosts.
-  -f string
-        Known hosts file location. (default ".ssh/known_hosts")
-  -h string
-        The SSH host to fingerprint.
+  -h    Show this help (default true)
+  -i string
+        A file that contains a list of ips
+  -o string
+        Known hosts file location to write public keys to. (default ".ssh/known_hosts")
   -p int
         The SSH port of host. (default 22)
+  -s string
+        The SSH host to fingerprint.
 ```
 
-Required flags are either `-c` or `-h`
+Required flags are either `-c` or `-s` or `-i`
 
+
+TODO: Test all the new functions
 ------
 <a href="https://www.buymeacoffee.com/alex_f0rg" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
