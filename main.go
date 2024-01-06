@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/yaml.v2"
@@ -127,6 +128,7 @@ func ChkYaml(file *string) Config {
 func DialSSH(host_str string, port_str int) {
 	sshConfig := &ssh.ClientConfig{
 		HostKeyCallback: KeyPrint,
+		Timeout:         3 * time.Second,
 	}
 
 	ssh.Dial("tcp", fmt.Sprintf("%s:%d", host_str, port_str), sshConfig)
